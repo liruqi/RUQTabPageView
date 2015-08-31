@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "RUQTabPageView/RUQTabPageView.h"
+#import "RUQTabPageView.h"
 #import "DetailViewController.h"
 @interface ViewController () <RUQTabPageViewDelegate>
 
