@@ -6,11 +6,7 @@
 //  Copyright (c) 2014年 Scasy. All rights reserved.
 //
 
-#import "QCSlideSwitchView.h"
-#import "UIView+JN.h"
-#import "SBCommon.h"
-#import "UIImage+JN.h"
-#import "SBToolFunction.h"
+#import "RUQTabPageView.h"
 
 static const CGFloat kHeightOfTopScrollView = 36.0f;
 static const CGFloat kWidthOfButtonMargin = 16.0f;
@@ -18,7 +14,203 @@ static const CGFloat kFontSizeOfTabButton = 15.0f;
 static const NSUInteger kTagOfRightSideButton = 999;
 //static const CGFloat kBottomLineWidth = 90.0;
 
-@implementation QCSlideSwitchView
+#define RGB(A, B, C)    [UIColor colorWithRed:A/255.0 green:B/255.0 blue:C/255.0 alpha:1.0]
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define kNavAndStatusBarHeight 64.0
+
+@implementation UIView (JN)
+
+// Retrieve and set the origin
+- (CGPoint) origin
+{
+    return self.frame.origin;
+}
+
+- (void) setOrigin: (CGPoint) aPoint
+{
+    CGRect newframe = self.frame;
+    newframe.origin = aPoint;
+    self.frame = newframe;
+}
+
+
+// Retrieve and set the size
+- (CGSize) size
+{
+    return self.frame.size;
+}
+
+- (void) setSize: (CGSize) aSize
+{
+    CGRect newframe = self.frame;
+    newframe.size = aSize;
+    self.frame = newframe;
+}
+
+// Query other frame locations
+- (CGPoint) bottomRight
+{
+    CGFloat x = self.frame.origin.x + self.frame.size.width;
+    CGFloat y = self.frame.origin.y + self.frame.size.height;
+    return CGPointMake(x, y);
+}
+
+- (CGPoint) bottomLeft
+{
+    CGFloat x = self.frame.origin.x;
+    CGFloat y = self.frame.origin.y + self.frame.size.height;
+    return CGPointMake(x, y);
+}
+
+- (CGPoint) topRight
+{
+    CGFloat x = self.frame.origin.x + self.frame.size.width;
+    CGFloat y = self.frame.origin.y;
+    return CGPointMake(x, y);
+}
+
+
+// Retrieve and set height, width, top, bottom, left, right
+- (CGFloat) height
+{
+    return self.frame.size.height;
+}
+
+- (void) setHeight: (CGFloat) newheight
+{
+    CGRect newframe = self.frame;
+    newframe.size.height = newheight;
+    self.frame = newframe;
+}
+
+- (CGFloat) width
+{
+    return self.frame.size.width;
+}
+
+- (void) setWidth: (CGFloat) newwidth
+{
+    CGRect newframe = self.frame;
+    newframe.size.width = newwidth;
+    self.frame = newframe;
+}
+
+- (CGFloat) top
+{
+    return self.frame.origin.y;
+}
+
+- (void) setTop: (CGFloat) newtop
+{
+    CGRect newframe = self.frame;
+    newframe.origin.y = newtop;
+    self.frame = newframe;
+}
+
+- (CGFloat) left
+{
+    return self.frame.origin.x;
+}
+
+- (void) setLeft: (CGFloat) newleft
+{
+    CGRect newframe = self.frame;
+    newframe.origin.x = newleft;
+    self.frame = newframe;
+}
+
+- (CGFloat) bottom
+{
+    return self.frame.origin.y + self.frame.size.height;
+}
+
+- (void) setBottom: (CGFloat) newbottom
+{
+    CGRect newframe = self.frame;
+    newframe.origin.y = newbottom - self.frame.size.height;
+    self.frame = newframe;
+}
+
+- (CGFloat) right
+{
+    return self.frame.origin.x + self.frame.size.width;
+}
+
+- (void) setRight: (CGFloat) newright
+{
+    CGFloat delta = newright - (self.frame.origin.x + self.frame.size.width);
+    CGRect newframe = self.frame;
+    newframe.origin.x += delta ;
+    self.frame = newframe;
+}
+
+// Move via offset
+- (void) moveBy: (CGPoint) delta
+{
+    CGPoint newcenter = self.center;
+    newcenter.x += delta.x;
+    newcenter.y += delta.y;
+    self.center = newcenter;
+}
+
+// Scaling
+- (void) scaleBy: (CGFloat) scaleFactor
+{
+    CGRect newframe = self.frame;
+    newframe.size.width *= scaleFactor;
+    newframe.size.height *= scaleFactor;
+    self.frame = newframe;
+}
+
+// Ensure that both dimensions fit within the given size by scaling down
+- (void) fitInSize: (CGSize) aSize
+{
+    CGFloat scale;
+    CGRect newframe = self.frame;
+    
+    if (newframe.size.height && (newframe.size.height > aSize.height))
+    {
+        scale = aSize.height / newframe.size.height;
+        newframe.size.width *= scale;
+        newframe.size.height *= scale;
+    }
+    
+    if (newframe.size.width && (newframe.size.width >= aSize.width))
+    {
+        scale = aSize.width / newframe.size.width;
+        newframe.size.width *= scale;
+        newframe.size.height *= scale;
+    }
+    
+    self.frame = newframe;
+}
+
+- (void) makeCorner:(float)r {
+    if (r < 0) r = 0;
+    self.layer.cornerRadius = r;
+    self.layer.masksToBounds = YES;
+}
+
+@end
+
+
+@implementation UIImage (JN)
++ (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+@end
+
+@implementation RUQTabPageView
 
 #pragma mark - 初始化参数
 
@@ -166,7 +358,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
 - (void)createNameButtons
 {
     _shadowView = [[UIView alloc] init];
-    _shadowView.backgroundColor = UICOLORWITHRGB(MAIN_COLOR_PURPLE);
+    _shadowView.backgroundColor = UICOLORWITHRGB(0x692e83);
     [_topScrollView addSubview:_shadowView];
     
     //顶部tabbar的总长度
@@ -188,7 +380,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
 //        CGSize textSize = [vc.title sizeWithFont:[UIFont systemFontOfSize:kFontSizeOfTabButton]
 //                               constrainedToSize:CGSizeMake(_topScrollView.bounds.size.width, kHeightOfTopScrollView)
 //                                   lineBreakMode:NSLineBreakByTruncatingTail];
-        CGSize textSize = [SBToolFunction sizeString:vc.title WithFont:[UIFont systemFontOfSize:kFontSizeOfTabButton] constrainedToSize:CGSizeMake(_topScrollView.bounds.size.width, kHeightOfTopScrollView) lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize textSize = [RUQTabPageView sizeString:vc.title WithFont:[UIFont systemFontOfSize:kFontSizeOfTabButton] constrainedToSize:CGSizeMake(_topScrollView.bounds.size.width, kHeightOfTopScrollView) lineBreakMode:NSLineBreakByWordWrapping];
         
         //累计每个tab文字的长度
         topScrollViewContentWidth += kWidthOfButtonMargin+textSize.width;
@@ -388,5 +580,18 @@ static const NSUInteger kTagOfRightSideButton = 999;
     _isAnimating = NO;
 }
 
++ (CGSize)sizeString:(NSString *)string WithFont:(UIFont *)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode{
+    
+    if ([string respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        NSDictionary *attributes = @{NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle};
+        
+        return [string boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
+    }else{
+        return [string sizeWithFont:font constrainedToSize:size lineBreakMode:lineBreakMode];
+    }
+}
 @end
 

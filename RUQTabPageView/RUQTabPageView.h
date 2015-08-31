@@ -8,13 +8,14 @@
 
 
 #import <UIKit/UIKit.h>
+#define UICOLORWITHRGB(rgb) ([UIColor colorWithRed:((CGFloat)((rgb & 0xFF0000) >> 16))/255.0 \
+green:((CGFloat)((rgb & 0xFF00) >> 8))/255.0 \
+blue:((CGFloat)(rgb & 0xFF))/255.0 \
+alpha:1.0])
 
-@protocol QCSlideSwitchViewDelegate;
-@interface QCSlideSwitchView : UIView<UIScrollViewDelegate>
+@protocol RUQTabPageViewDelegate;
+@interface RUQTabPageView : UIView<UIScrollViewDelegate>
 {
-    UIScrollView *_rootScrollView;                  //主视图
-    UIScrollView *_topScrollView;                   //顶部页签视图
-    
     CGFloat _userContentOffsetX;
     BOOL _isAnimating;                              //是否正在响应点击事件做动画
     BOOL _isBuildUI;                                //是否建立了ui
@@ -29,29 +30,24 @@
     UIImage *_tabItemSelectedBackgroundImage;       //选中时tab的背景
     NSMutableArray *_viewArray;                     //主视图的子视图数组
     
-    UIButton *_rigthSideButton;                     //右侧按钮
-    
-    __weak id<QCSlideSwitchViewDelegate> _slideSwitchViewDelegate;
-    
     CGFloat _startContentOffsetX;
     CGFloat _bottomLineWidth;
 }
 
-@property (nonatomic, strong) IBOutlet UIScrollView *rootScrollView;
-@property (nonatomic, strong) IBOutlet UIScrollView *topScrollView;
+@property (nonatomic, strong) UIScrollView *rootScrollView; //主视图
+@property (nonatomic, strong) UIScrollView *topScrollView; //顶部页签视图
 @property (nonatomic, assign) CGFloat userContentOffsetX;
 @property (nonatomic, assign) NSInteger userSelectedChannelID;
 @property (nonatomic, assign) NSInteger scrollViewSelectedChannelID;
-@property (nonatomic, weak) IBOutlet id<QCSlideSwitchViewDelegate> slideSwitchViewDelegate;
+@property (nonatomic, weak) id<RUQTabPageViewDelegate> slideSwitchViewDelegate;
 @property (nonatomic, strong) UIColor *tabItemNormalColor;
 @property (nonatomic, strong) UIColor *tabItemSelectedColor;
 @property (nonatomic, strong) UIImage *tabItemNormalBackgroundImage;
 @property (nonatomic, strong) UIImage *tabItemSelectedBackgroundImage;
 
 @property (nonatomic, strong) NSMutableArray *viewArray;
-@property (nonatomic, strong) IBOutlet UIButton *rigthSideButton;
+@property (nonatomic, strong) UIButton *rigthSideButton;
 @property (nonatomic, strong) UIImageView *buttonBottomLine;
-
 
 @property (nonatomic,assign) BOOL isOnlyInOneView;//按钮是否只在一个视图中显示,可以根据屏幕尺寸平均分配坐标,默认为NO
 
@@ -67,7 +63,7 @@
 
 @end
 
-@protocol QCSlideSwitchViewDelegate <NSObject>
+@protocol RUQTabPageViewDelegate <NSObject>
 
 @required
 
@@ -78,7 +74,7 @@
  * @param 本控件
  * @result tab个数
  */
-- (NSUInteger)numberOfTab:(QCSlideSwitchView *)view;
+- (NSUInteger)numberOfTab:(RUQTabPageView *)view;
 
 /*!
  * @method 每个tab所属的viewController
@@ -87,7 +83,7 @@
  * @param tab索引
  * @result viewController
  */
-- (UIViewController *)slideSwitchView:(QCSlideSwitchView *)view viewOfTab:(NSUInteger)number;
+- (UIViewController *)slideSwitchView:(RUQTabPageView *)view viewOfTab:(NSUInteger)number;
 
 @optional
 
@@ -98,7 +94,7 @@
  * @param   手势
  * @result
  */
-- (void)slideSwitchView:(QCSlideSwitchView *)view panLeftEdge:(UIPanGestureRecognizer*) panParam;
+- (void)slideSwitchView:(RUQTabPageView *)view panLeftEdge:(UIPanGestureRecognizer*) panParam;
 
 /*!
  * @method 滑动右边界时传递手势
@@ -107,7 +103,7 @@
  * @param   手势
  * @result
  */
-- (void)slideSwitchView:(QCSlideSwitchView *)view panRightEdge:(UIPanGestureRecognizer*) panParam;
+- (void)slideSwitchView:(RUQTabPageView *)view panRightEdge:(UIPanGestureRecognizer*) panParam;
 
 /*!
  * @method 点击tab
@@ -116,7 +112,7 @@
  * @param tab索引
  * @result
  */
-- (void)slideSwitchView:(QCSlideSwitchView *)view didselectTab:(NSUInteger)number;
+- (void)slideSwitchView:(RUQTabPageView *)view didselectTab:(NSUInteger)number;
 
 @end
 
