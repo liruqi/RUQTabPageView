@@ -249,7 +249,6 @@ static const NSUInteger kTagOfRightSideButton = 999;
     
     _viewArray = [[NSMutableArray alloc] init];
     
-    _isBuildUI = NO;
     _isOnlyInOneView=NO;
 }
 
@@ -288,8 +287,10 @@ static const NSUInteger kTagOfRightSideButton = 999;
 //当横竖屏切换时可通过此方法调整布局
 - (void)layoutSubviews
 {
-    //创建完子视图UI才需要调整布局
-    if (_isBuildUI) {
+    if (! self.delegate) {
+        return;
+    }
+    
         //如果有设置右侧视图，缩小顶部滚动视图的宽度以适应按钮
         if (self.rigthSideButton.bounds.size.width > 0) {
             _rigthSideButton.frame = CGRectMake(self.bounds.size.width - self.rigthSideButton.bounds.size.width, 0,
@@ -315,7 +316,6 @@ static const NSUInteger kTagOfRightSideButton = 999;
         //调整顶部滚动视图选中按钮位置
         UIButton *button = (UIButton *)[_topScrollView viewWithTag:_userSelectedChannelID];
         [self adjustScrollViewContentX:button];
-    }
 }
 
 /*!
@@ -325,12 +325,12 @@ static const NSUInteger kTagOfRightSideButton = 999;
  * @param
  * @result
  */
-- (void)buildUI
+- (void) setDelegate:(id<RUQTabPageViewDelegate>)d
 {
-    NSUInteger number = [self.slideSwitchViewDelegate numberOfTab:self];
-    
+    NSUInteger number = [d numberOfTab:self];
+    _viewArray = [NSMutableArray arrayWithCapacity:number];
     for (int i=0; i<number; i++) {
-        UIViewController *vc = [self.slideSwitchViewDelegate slideSwitchView:self viewOfTab:i];
+        UIViewController *vc = [d slideSwitchView:self viewOfTab:i];
         [_viewArray addObject:vc];
         [_rootScrollView addSubview:vc.view];
         NSLog(@"%@ title:%@",[vc.view class], vc.title);
@@ -338,11 +338,11 @@ static const NSUInteger kTagOfRightSideButton = 999;
     [self createNameButtons];
     
     //选中第一个view
-    if (number > 0 && self.slideSwitchViewDelegate && [self.slideSwitchViewDelegate respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
-        [self.slideSwitchViewDelegate slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
+    if (number > 0 && d && [d respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
+        [d slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
     }
     
-    _isBuildUI = YES;
+    _delegate = d;
     
     //创建完子视图UI才需要调整布局
     [self setNeedsLayout];
@@ -467,8 +467,8 @@ static const NSUInteger kTagOfRightSideButton = 999;
         
                 //设置新页出现
                     [_rootScrollView setContentOffset:CGPointMake((sender.tag - 100)*self.bounds.size.width, 0) animated: YES];
-                if (self.slideSwitchViewDelegate && [self.slideSwitchViewDelegate respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
-                    [self.slideSwitchViewDelegate slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
+                    [self.delegate slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
                 }
                 
         
@@ -567,14 +567,14 @@ static const NSUInteger kTagOfRightSideButton = 999;
 {
     //当滑道左边界时，传递滑动事件给代理
     if(_rootScrollView.contentOffset.x <= 0) {
-        if (self.slideSwitchViewDelegate
-            && [self.slideSwitchViewDelegate respondsToSelector:@selector(slideSwitchView:panLeftEdge:)]) {
-            [self.slideSwitchViewDelegate slideSwitchView:self panLeftEdge:panParam];
+        if (self.delegate
+            && [self.delegate respondsToSelector:@selector(slideSwitchView:panLeftEdge:)]) {
+            [self.delegate slideSwitchView:self panLeftEdge:panParam];
         }
     } else if(_rootScrollView.contentOffset.x >= _rootScrollView.contentSize.width - _rootScrollView.bounds.size.width) {
-        if (self.slideSwitchViewDelegate
-            && [self.slideSwitchViewDelegate respondsToSelector:@selector(slideSwitchView:panRightEdge:)]) {
-            [self.slideSwitchViewDelegate slideSwitchView:self panRightEdge:panParam];
+        if (self.delegate
+            && [self.delegate respondsToSelector:@selector(slideSwitchView:panRightEdge:)]) {
+            [self.delegate slideSwitchView:self panRightEdge:panParam];
         }
     }
     _isAnimating = NO;

@@ -26,7 +26,6 @@
     f.origin.y += 20;
     f.size.height -= 20;
     RUQTabPageView *view = [[RUQTabPageView alloc] initWithFrame:f];
-    view.slideSwitchViewDelegate = self;
     // view.isOnlyInOneView=YES;
     view.topScrollView.backgroundColor = [UIColor whiteColor];
     view.backgroundColor = [UIColor lightGrayColor];
@@ -40,10 +39,10 @@
         vc.title = day;
         [self.dataSource addObject:vc];
     }
-    
+    view.delegate = self;
+
     [self.view addSubview:view];
     self.tabPageView = view;
-    [view buildUI];
 }
 
 - (void)didReceiveMemoryWarning {

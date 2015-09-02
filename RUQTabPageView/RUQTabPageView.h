@@ -18,7 +18,6 @@ alpha:1.0])
 {
     CGFloat _userContentOffsetX;
     BOOL _isAnimating;                              //是否正在响应点击事件做动画
-    BOOL _isBuildUI;                                //是否建立了ui
     
     NSInteger _userSelectedChannelID;               //点击按钮选择名字ID
     
@@ -39,7 +38,7 @@ alpha:1.0])
 @property (nonatomic, assign) CGFloat userContentOffsetX;
 @property (nonatomic, assign) NSInteger userSelectedChannelID;
 @property (nonatomic, assign) NSInteger scrollViewSelectedChannelID;
-@property (nonatomic, weak) id<RUQTabPageViewDelegate> slideSwitchViewDelegate;
+@property (nonatomic, weak) id<RUQTabPageViewDelegate> delegate;
 @property (nonatomic, strong) UIColor *tabItemNormalColor;
 @property (nonatomic, strong) UIColor *tabItemSelectedColor;
 @property (nonatomic, strong) UIImage *tabItemNormalBackgroundImage;
@@ -50,16 +49,6 @@ alpha:1.0])
 @property (nonatomic, strong) UIImageView *buttonBottomLine;
 
 @property (nonatomic,assign) BOOL isOnlyInOneView;//按钮是否只在一个视图中显示,可以根据屏幕尺寸平均分配坐标,默认为NO
-
-
-/*!
- * @method 创建子视图UI
- * @abstract
- * @discussion
- * @param
- * @result
- */
-- (void)buildUI;
 
 @end
 
