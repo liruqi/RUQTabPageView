@@ -31,6 +31,7 @@ alpha:1.0])
     
     CGFloat _startContentOffsetX;
     CGFloat _bottomLineWidth;
+    BOOL _staticTabs; // static tabs do not scroll, true for tabs less than or equal to 4
 }
 
 @property (nonatomic, strong) UIScrollView *rootScrollView; //主视图
@@ -47,8 +48,6 @@ alpha:1.0])
 @property (nonatomic, strong) NSMutableArray *viewArray;
 @property (nonatomic, strong) UIButton *rigthSideButton;
 @property (nonatomic, strong) UIImageView *buttonBottomLine;
-
-@property (nonatomic,assign) BOOL isOnlyInOneView;//按钮是否只在一个视图中显示,可以根据屏幕尺寸平均分配坐标,默认为NO
 
 @end
 

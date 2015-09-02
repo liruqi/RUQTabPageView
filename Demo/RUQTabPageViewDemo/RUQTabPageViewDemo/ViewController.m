@@ -33,6 +33,8 @@
     view.tabItemSelectedColor = UICOLORWITHRGB(0xB282C6);
     
     NSArray *daysInWeek = @[@"Sunday",@"Monday",@"Tuesday", @"Wednesday", @"Thursday", @"Friday", @"Saturday"];
+//    NSArray *daysInWeek = @[@"Sunday",@"Monday",@"Tuesday"];
+
     self.dataSource = [NSMutableArray arrayWithCapacity: daysInWeek.count];
     for (NSString* day in daysInWeek) {
         DetailViewController *vc = [DetailViewController new];

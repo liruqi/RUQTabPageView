@@ -248,8 +248,6 @@ static const NSUInteger kTagOfRightSideButton = 999;
     [self addSubview:_rootScrollView];
     
     _viewArray = [[NSMutableArray alloc] init];
-    
-    _isOnlyInOneView=NO;
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -328,6 +326,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
 - (void) setDelegate:(id<RUQTabPageViewDelegate>)d
 {
     NSUInteger number = [d numberOfTab:self];
+    _staticTabs = (number <= 4);
     _viewArray = [NSMutableArray arrayWithCapacity:number];
     for (int i=0; i<number; i++) {
         UIViewController *vc = [d slideSwitchView:self viewOfTab:i];
@@ -366,7 +365,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
     //每个tab偏移量
     CGFloat xOffset = kWidthOfButtonMargin;
 
-    if(_isOnlyInOneView){
+    if(_staticTabs){
         self.topScrollView.scrollEnabled = NO;
         topScrollViewContentWidth = kScreenWidth;
         xOffset=0;
@@ -385,7 +384,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
         //累计每个tab文字的长度
         topScrollViewContentWidth += kWidthOfButtonMargin+textSize.width;
         
-        if(_isOnlyInOneView){
+        if(_staticTabs){
             xOffset = (kScreenWidth/_viewArray.count-textSize.width)/2 + i*(kScreenWidth/_viewArray.count);
             
         }
@@ -416,7 +415,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
         [_topScrollView addSubview:button];
         
         //计算下一个tab的x偏移量
-        if(!_isOnlyInOneView){
+        if(!_staticTabs){
             xOffset += textSize.width + kWidthOfButtonMargin;
         }
     }
