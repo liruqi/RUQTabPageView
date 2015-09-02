@@ -1,9 +1,9 @@
 //
-//  QCSlideSwitchView.h
-//  QCSliderTableView
+//  RUQTabPageView.h
+//  RUQTabPageView
 //
-//  Created by “ jn on 14-4-16.
-//  Copyright (c) 2014年 Scasy. All rights reserved.
+//  Created by Ruqi Li.
+//  Copyright (c) 2015 CMCM. All rights reserved.
 //
 
 
