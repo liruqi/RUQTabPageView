@@ -356,28 +356,24 @@ static const NSUInteger kTagOfRightSideButton = 999;
     }
     if (scrollView == _rootScrollView) {
         NSLog(@"[QCSlideSwitchView] contentOffset.x: %f",scrollView.contentOffset.x);
-        if (_staticTabs) {
-            CGFloat tabWidth = kScreenWidth/_viewArray.count;
-            _shadowView.frame = CGRectMake(scrollView.contentOffset.x / _viewArray.count, kHeightOfTopScrollView - 3, tabWidth, 3);
-        } else {
-            int tag = (int)scrollView.contentOffset.x / self.bounds.size.width + 100;
-            UIButton *button = (UIButton *)[_topScrollView viewWithTag:tag];
-            UIButton *toButton = (UIButton *)[_topScrollView viewWithTag:tag + 1];
+        
+        int tag = (int)scrollView.contentOffset.x / self.bounds.size.width + 100;
+        UIButton *button = (UIButton *)[_topScrollView viewWithTag:tag];
+        UIButton *toButton = (UIButton *)[_topScrollView viewWithTag:tag + 1];
+        
+        if (button && toButton) {
+            CGFloat width = CGRectGetWidth(button.frame);
+            CGFloat offset = (int) scrollView.contentOffset.x % (int) self.bounds.size.width;
+            CGFloat percent = offset / self.bounds.size.width;
+            CGFloat widthDelta =  CGRectGetWidth(toButton.frame) - width;
+            CGFloat lineWidth = width + percent * widthDelta;
             
-            if (button && toButton) {
-                CGFloat width = CGRectGetWidth(button.frame);
-                CGFloat offset = (int) scrollView.contentOffset.x % (int) self.bounds.size.width;
-                CGFloat percent = offset / self.bounds.size.width;
-                CGFloat widthDelta =  CGRectGetWidth(toButton.frame) - width;
-                CGFloat lineWidth = width + percent * widthDelta;
-                
-                NSLog(@"[QCSlideSwitchView] _shadowView: %f %f => %f",
-                      percent,
-                      CGRectGetMinX(_shadowView.frame),
-                      button.frame.origin.x + percent * width);
-                
-                [_shadowView setFrame:CGRectMake(button.frame.origin.x + percent * (CGRectGetMinX(toButton.frame) - CGRectGetMinX(button.frame)), kHeightOfTopScrollView - 3, lineWidth, 3)];
-            }
+            //                NSLog(@"[QCSlideSwitchView] _shadowView: %f %f => %f",
+            //                      percent,
+            //                      CGRectGetMinX(_shadowView.frame),
+            //                      button.frame.origin.x + percent * width);
+            
+            [_shadowView setFrame:CGRectMake(button.frame.origin.x + percent * (CGRectGetMinX(toButton.frame) - CGRectGetMinX(button.frame)), kHeightOfTopScrollView - 3, lineWidth, 3)];
         }
     }
 }
