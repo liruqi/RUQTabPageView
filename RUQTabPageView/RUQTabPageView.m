@@ -9,191 +9,13 @@
 #import "RUQTabPageView.h"
 
 static const CGFloat kHeightOfTopScrollView = 36.0f;
-static const CGFloat kWidthOfButtonMargin = 16.0f;
+static CGFloat kWidthOfButtonMargin = 16.0f;
 static const CGFloat kFontSizeOfTabButton = 15.0f;
 static const NSUInteger kTagOfRightSideButton = 999;
-//static const CGFloat kBottomLineWidth = 90.0;
 
 #define RGB(A, B, C)    [UIColor colorWithRed:A/255.0 green:B/255.0 blue:C/255.0 alpha:1.0]
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
-#define kNavAndStatusBarHeight 64.0
-
-@implementation UIView (JN)
-
-// Retrieve and set the origin
-- (CGPoint) origin
-{
-    return self.frame.origin;
-}
-
-- (void) setOrigin: (CGPoint) aPoint
-{
-    CGRect newframe = self.frame;
-    newframe.origin = aPoint;
-    self.frame = newframe;
-}
-
-
-// Retrieve and set the size
-- (CGSize) size
-{
-    return self.frame.size;
-}
-
-- (void) setSize: (CGSize) aSize
-{
-    CGRect newframe = self.frame;
-    newframe.size = aSize;
-    self.frame = newframe;
-}
-
-// Query other frame locations
-- (CGPoint) bottomRight
-{
-    CGFloat x = self.frame.origin.x + self.frame.size.width;
-    CGFloat y = self.frame.origin.y + self.frame.size.height;
-    return CGPointMake(x, y);
-}
-
-- (CGPoint) bottomLeft
-{
-    CGFloat x = self.frame.origin.x;
-    CGFloat y = self.frame.origin.y + self.frame.size.height;
-    return CGPointMake(x, y);
-}
-
-- (CGPoint) topRight
-{
-    CGFloat x = self.frame.origin.x + self.frame.size.width;
-    CGFloat y = self.frame.origin.y;
-    return CGPointMake(x, y);
-}
-
-
-// Retrieve and set height, width, top, bottom, left, right
-- (CGFloat) height
-{
-    return self.frame.size.height;
-}
-
-- (void) setHeight: (CGFloat) newheight
-{
-    CGRect newframe = self.frame;
-    newframe.size.height = newheight;
-    self.frame = newframe;
-}
-
-- (CGFloat) width
-{
-    return self.frame.size.width;
-}
-
-- (void) setWidth: (CGFloat) newwidth
-{
-    CGRect newframe = self.frame;
-    newframe.size.width = newwidth;
-    self.frame = newframe;
-}
-
-- (CGFloat) top
-{
-    return self.frame.origin.y;
-}
-
-- (void) setTop: (CGFloat) newtop
-{
-    CGRect newframe = self.frame;
-    newframe.origin.y = newtop;
-    self.frame = newframe;
-}
-
-- (CGFloat) left
-{
-    return self.frame.origin.x;
-}
-
-- (void) setLeft: (CGFloat) newleft
-{
-    CGRect newframe = self.frame;
-    newframe.origin.x = newleft;
-    self.frame = newframe;
-}
-
-- (CGFloat) bottom
-{
-    return self.frame.origin.y + self.frame.size.height;
-}
-
-- (void) setBottom: (CGFloat) newbottom
-{
-    CGRect newframe = self.frame;
-    newframe.origin.y = newbottom - self.frame.size.height;
-    self.frame = newframe;
-}
-
-- (CGFloat) right
-{
-    return self.frame.origin.x + self.frame.size.width;
-}
-
-- (void) setRight: (CGFloat) newright
-{
-    CGFloat delta = newright - (self.frame.origin.x + self.frame.size.width);
-    CGRect newframe = self.frame;
-    newframe.origin.x += delta ;
-    self.frame = newframe;
-}
-
-// Move via offset
-- (void) moveBy: (CGPoint) delta
-{
-    CGPoint newcenter = self.center;
-    newcenter.x += delta.x;
-    newcenter.y += delta.y;
-    self.center = newcenter;
-}
-
-// Scaling
-- (void) scaleBy: (CGFloat) scaleFactor
-{
-    CGRect newframe = self.frame;
-    newframe.size.width *= scaleFactor;
-    newframe.size.height *= scaleFactor;
-    self.frame = newframe;
-}
-
-// Ensure that both dimensions fit within the given size by scaling down
-- (void) fitInSize: (CGSize) aSize
-{
-    CGFloat scale;
-    CGRect newframe = self.frame;
-    
-    if (newframe.size.height && (newframe.size.height > aSize.height))
-    {
-        scale = aSize.height / newframe.size.height;
-        newframe.size.width *= scale;
-        newframe.size.height *= scale;
-    }
-    
-    if (newframe.size.width && (newframe.size.width >= aSize.width))
-    {
-        scale = aSize.width / newframe.size.width;
-        newframe.size.width *= scale;
-        newframe.size.height *= scale;
-    }
-    
-    self.frame = newframe;
-}
-
-- (void) makeCorner:(float)r {
-    if (r < 0) r = 0;
-    self.layer.cornerRadius = r;
-    self.layer.masksToBounds = YES;
-}
-
-@end
-
 
 @implementation UIImage (JN)
 + (UIImage *)imageWithColor:(UIColor *)color
@@ -229,7 +51,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
     _userSelectedChannelID = 100;
     
     // 分割线
-    UIImageView *lineView = [[UIImageView alloc] initWithFrame:CGRectMake(0, _topScrollView.bottom-0.5, kScreenWidth, 0.5)];
+    UIImageView *lineView = [[UIImageView alloc] initWithFrame:CGRectMake(0, kHeightOfTopScrollView-0.5, kScreenWidth, 0.5)];
     lineView.image = [UIImage imageWithColor:[UIColor colorWithRed:193.0/255 green:193.0/255 blue:193.0/255 alpha:1.0]];
     [self addSubview:lineView];
     
@@ -329,8 +151,11 @@ static const NSUInteger kTagOfRightSideButton = 999;
     _staticTabs = (number <= 4);
     _viewArray = [NSMutableArray arrayWithCapacity:number];
     for (int i=0; i<number; i++) {
-        UIViewController *vc = [d slideSwitchView:self viewOfTab:i];
+        UIViewController<RUQPageViewControllerProtocol> *vc = [d slideSwitchView:self viewOfTab:i];
         [_viewArray addObject:vc];
+        if ([vc respondsToSelector:@selector(setNavigation:)]) {
+            [vc setNavigation: [d navigationController]];
+        }
         [_rootScrollView addSubview:vc.view];
         NSLog(@"%@ title:%@",[vc.view class], vc.title);
     }
@@ -359,35 +184,24 @@ static const NSUInteger kTagOfRightSideButton = 999;
     _shadowView = [[UIView alloc] init];
     _shadowView.backgroundColor = UICOLORWITHRGB(0x692e83);
     [_topScrollView addSubview:_shadowView];
+    if(_staticTabs){
+        [self createStaticTabButtons];
+        return;
+    }
     
     //顶部tabbar的总长度
     CGFloat topScrollViewContentWidth = kWidthOfButtonMargin;
     //每个tab偏移量
     CGFloat xOffset = kWidthOfButtonMargin;
-
-    if(_staticTabs){
-        self.topScrollView.scrollEnabled = NO;
-        topScrollViewContentWidth = kScreenWidth;
-        xOffset=0;
-    } else {
-        self.topScrollView.scrollEnabled = YES;
-    }
+    self.topScrollView.scrollEnabled = YES;
     
     for (int i = 0; i < [_viewArray count]; i++) {
         UIViewController *vc = _viewArray[i];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-//        CGSize textSize = [vc.title sizeWithFont:[UIFont systemFontOfSize:kFontSizeOfTabButton]
-//                               constrainedToSize:CGSizeMake(_topScrollView.bounds.size.width, kHeightOfTopScrollView)
-//                                   lineBreakMode:NSLineBreakByTruncatingTail];
+
         CGSize textSize = [RUQTabPageView sizeString:vc.title WithFont:[UIFont systemFontOfSize:kFontSizeOfTabButton] constrainedToSize:CGSizeMake(_topScrollView.bounds.size.width, kHeightOfTopScrollView) lineBreakMode:NSLineBreakByWordWrapping];
-        
         //累计每个tab文字的长度
         topScrollViewContentWidth += kWidthOfButtonMargin+textSize.width;
-        
-        if(_staticTabs){
-            xOffset = (kScreenWidth/_viewArray.count-textSize.width)/2 + i*(kScreenWidth/_viewArray.count);
-            
-        }
         
         //设置按钮尺寸
         [button setFrame:CGRectMake(xOffset,  0,
@@ -395,10 +209,8 @@ static const NSUInteger kTagOfRightSideButton = 999;
 
         [button setTag:i+100];
         if (i == 0) {
-            _shadowView.frame = CGRectMake(xOffset, kHeightOfTopScrollView - 3, textSize.width, 3);
+            _shadowView.frame = CGRectMake(0, kHeightOfTopScrollView - 3, kScreenWidth/_viewArray.count, 3);
             button.selected = YES;
-            _buttonBottomLine.left = button.left;
-            _buttonBottomLine.width = button.width;
         }
 //        NSLog(@"title:%@ xOffset:%f buttonFrame:%@",vc.title,xOffset,NSStringFromCGRect(button.frame));
         
@@ -411,19 +223,50 @@ static const NSUInteger kTagOfRightSideButton = 999;
         [button setBackgroundImage:self.tabItemNormalBackgroundImage forState:UIControlStateNormal];
         [button setBackgroundImage:self.tabItemSelectedBackgroundImage forState:UIControlStateSelected];
         [button addTarget:self action:@selector(onPageSelected:) forControlEvents:UIControlEventTouchUpInside];
-//        button.backgroundColor = [UIColor redColor];
         [_topScrollView addSubview:button];
         
         //计算下一个tab的x偏移量
-        if(!_staticTabs){
-            xOffset += textSize.width + kWidthOfButtonMargin;
-        }
+        xOffset += textSize.width + kWidthOfButtonMargin;
     }
     
     //设置顶部滚动视图的内容总尺寸
     _topScrollView.contentSize = CGSizeMake(topScrollViewContentWidth, kHeightOfTopScrollView);
 }
 
+- (void) createStaticTabButtons {
+    kWidthOfButtonMargin = 0;
+    self.topScrollView.scrollEnabled = NO;
+    self.topScrollView.contentSize = CGSizeMake(kScreenWidth, kHeightOfTopScrollView);
+    
+    CGFloat xOffset = 0;
+    CGFloat tabWidth = kScreenWidth/_viewArray.count;
+    for (int i = 0; i < [_viewArray count]; i++) {
+        UIViewController *vc = _viewArray[i];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        //设置按钮尺寸
+        [button setFrame:CGRectMake(xOffset,  0, tabWidth, kHeightOfTopScrollView)];
+        
+        [button setTag:i+100];
+        if (i == 0) {
+            _shadowView.frame = CGRectMake(0, kHeightOfTopScrollView - 3, tabWidth, 3);
+            button.selected = YES;
+        }
+//        NSLog(@"title:%@ xOffset:%f buttonFrame:%@",vc.title,xOffset,NSStringFromCGRect(button.frame));
+        
+        [button setTitle:vc.title forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:kFontSizeOfTabButton];
+        [button setTitleColor:self.tabItemNormalColor forState:UIControlStateNormal];
+        [button setTitleColor:self.tabItemSelectedColor forState:UIControlStateSelected];
+        
+        [button setBackgroundImage:self.tabItemNormalBackgroundImage forState:UIControlStateNormal];
+        [button setBackgroundImage:self.tabItemSelectedBackgroundImage forState:UIControlStateSelected];
+        [button addTarget:self action:@selector(onPageSelected:) forControlEvents:UIControlEventTouchUpInside];
+        [_topScrollView addSubview:button];
+        
+        xOffset += tabWidth;
+    }
+}
 
 #pragma mark - 顶部滚动视图逻辑方法
 
@@ -441,11 +284,6 @@ static const NSUInteger kTagOfRightSideButton = 999;
  */
 - (void)selectNameButton:(UIButton *)sender
 {
-    [UIView animateWithDuration:0.1f animations:^{
-        _buttonBottomLine.left = sender.left;
-        _buttonBottomLine.width = sender.width;
-    }];
-
     //如果点击的tab文字显示不全，调整滚动视图x坐标使用使tab文字显示全
     [self adjustScrollViewContentX:sender];
     
@@ -462,15 +300,13 @@ static const NSUInteger kTagOfRightSideButton = 999;
     if (!sender.selected) {
         sender.selected = YES;
         
-            [_shadowView setFrame:CGRectMake(sender.frame.origin.x, kHeightOfTopScrollView - 3, sender.frame.size.width, 3)];
-        
-                //设置新页出现
-                    [_rootScrollView setContentOffset:CGPointMake((sender.tag - 100)*self.bounds.size.width, 0) animated: YES];
-                if (self.delegate && [self.delegate respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
-                    [self.delegate slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
-                }
-                
-        
+        [_shadowView setFrame:CGRectMake(sender.frame.origin.x, kHeightOfTopScrollView - 3, sender.frame.size.width, 3)];
+
+        //设置新页出现
+        [_rootScrollView setContentOffset:CGPointMake((sender.tag - 100)*self.bounds.size.width, 0) animated: YES];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(slideSwitchView:didselectTab:)]) {
+            [self.delegate slideSwitchView:self didselectTab:_userSelectedChannelID - 100];
+        }
     }
     //重复点击选中按钮
     else {
@@ -520,33 +356,29 @@ static const NSUInteger kTagOfRightSideButton = 999;
     }
     if (scrollView == _rootScrollView) {
         NSLog(@"[QCSlideSwitchView] contentOffset.x: %f",scrollView.contentOffset.x);
-        int tag = (int)scrollView.contentOffset.x / self.bounds.size.width + 100;
-        UIButton *button = (UIButton *)[_topScrollView viewWithTag:tag];
-        UIButton *toButton = (UIButton *)[_topScrollView viewWithTag:tag + 1];
-        
-        if (button && toButton) {
-            CGFloat width = CGRectGetWidth(button.frame);
-            CGFloat offset = (int) scrollView.contentOffset.x % (int) self.bounds.size.width;
-            CGFloat percent = offset / self.bounds.size.width;
-            CGFloat widthDelta =  CGRectGetWidth(toButton.frame) - width;
-            CGFloat lineWidth = width + percent * widthDelta;
+        if (_staticTabs) {
+            CGFloat tabWidth = kScreenWidth/_viewArray.count;
+            _shadowView.frame = CGRectMake(scrollView.contentOffset.x / _viewArray.count, kHeightOfTopScrollView - 3, tabWidth, 3);
+        } else {
+            int tag = (int)scrollView.contentOffset.x / self.bounds.size.width + 100;
+            UIButton *button = (UIButton *)[_topScrollView viewWithTag:tag];
+            UIButton *toButton = (UIButton *)[_topScrollView viewWithTag:tag + 1];
             
-            NSLog(@"[QCSlideSwitchView] _shadowView: %f %f => %f",
-                  percent,
-                  CGRectGetMinX(_shadowView.frame),
-                  button.frame.origin.x + percent * width);
-
-            [_shadowView setFrame:CGRectMake(button.frame.origin.x + percent * (CGRectGetMinX(toButton.frame) - CGRectGetMinX(button.frame)), kHeightOfTopScrollView - 3, lineWidth, 3)];
+            if (button && toButton) {
+                CGFloat width = CGRectGetWidth(button.frame);
+                CGFloat offset = (int) scrollView.contentOffset.x % (int) self.bounds.size.width;
+                CGFloat percent = offset / self.bounds.size.width;
+                CGFloat widthDelta =  CGRectGetWidth(toButton.frame) - width;
+                CGFloat lineWidth = width + percent * widthDelta;
+                
+                NSLog(@"[QCSlideSwitchView] _shadowView: %f %f => %f",
+                      percent,
+                      CGRectGetMinX(_shadowView.frame),
+                      button.frame.origin.x + percent * width);
+                
+                [_shadowView setFrame:CGRectMake(button.frame.origin.x + percent * (CGRectGetMinX(toButton.frame) - CGRectGetMinX(button.frame)), kHeightOfTopScrollView - 3, lineWidth, 3)];
+            }
         }
-
-//        CGFloat rootSlideX = scrollView.contentOffset.x - self.bounds.size.width*(tag-100);
-//        
-//        NSLog(@"rootSlideX:%f",rootSlideX);
-//
-//        CGFloat topSliderX = rootSlideX/self.rootScrollView.contentSize.width * (button.left+button.width+kWidthOfButtonMargin);
-        
-//        CGFloat slideRate = scrollView.contentOffset.x/scrollView.contentSize.width;
-//        _buttonBottomLine.left = kWidthOfButtonMargin +  _topScrollView.contentSize.width*slideRate;
     }
 }
 //滚动视图释放滚动

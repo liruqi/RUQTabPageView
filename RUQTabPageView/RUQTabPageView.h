@@ -47,7 +47,13 @@ alpha:1.0])
 
 @property (nonatomic, strong) NSMutableArray *viewArray;
 @property (nonatomic, strong) UIButton *rigthSideButton;
-@property (nonatomic, strong) UIImageView *buttonBottomLine;
+
+@end
+
+@protocol RUQPageViewControllerProtocol <NSObject>
+
+@required
+- (void)setNavigation:(UINavigationController *)view;
 
 @end
 
@@ -71,7 +77,9 @@ alpha:1.0])
  * @param tab索引
  * @result viewController
  */
-- (UIViewController *)slideSwitchView:(RUQTabPageView *)view viewOfTab:(NSUInteger)number;
+- (UIViewController<RUQPageViewControllerProtocol> *)slideSwitchView:(RUQTabPageView *)view viewOfTab:(NSUInteger)number;
+
+- (UINavigationController*) navigationController;
 
 @optional
 
