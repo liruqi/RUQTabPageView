@@ -374,6 +374,22 @@ static const NSUInteger kTagOfRightSideButton = 999;
             //                      button.frame.origin.x + percent * width);
             
             [_shadowView setFrame:CGRectMake(button.frame.origin.x + percent * (CGRectGetMinX(toButton.frame) - CGRectGetMinX(button.frame)), kHeightOfTopScrollView - 3, lineWidth, 3)];
+            
+            CGFloat buttonGap = fabs((_shadowView.frame.origin.x+_shadowView.frame.size.width/2)-(button.frame.origin.x+button.frame.size.width/2));
+            CGFloat toButtonGap = fabs((_shadowView.frame.origin.x+_shadowView.frame.size.width/2)-(toButton.frame.origin.x+toButton.frame.size.width/2));
+
+            UIButton *slideSelectedBtn = (buttonGap < toButtonGap) ? button : toButton;
+            slideSelectedBtn.selected = YES;
+            
+            //如果更换按钮
+            if (slideSelectedBtn.tag != _userSelectedChannelID) {
+                //取之前的按钮
+                UIButton *lastButton = (UIButton *)[_topScrollView viewWithTag:_userSelectedChannelID];
+                lastButton.selected = NO;
+                //赋值按钮ID
+                _userSelectedChannelID = slideSelectedBtn.tag;
+            }
+
         }
     }
 }
