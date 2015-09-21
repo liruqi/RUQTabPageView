@@ -13,13 +13,13 @@ green:((CGFloat)((rgb & 0xFF00) >> 8))/255.0 \
 blue:((CGFloat)(rgb & 0xFF))/255.0 \
 alpha:1.0])
 
+static const CGFloat kHeightOfTopScrollView = 36.0f;
+
 @protocol RUQTabPageViewDelegate;
 @interface RUQTabPageView : UIView<UIScrollViewDelegate>
 {
     CGFloat _userContentOffsetX;
     BOOL _isAnimating;                              //是否正在响应点击事件做动画
-    
-    NSInteger _userSelectedChannelID;               //点击按钮选择名字ID
     
     UIView *_shadowView;
     
@@ -37,7 +37,7 @@ alpha:1.0])
 @property (nonatomic, strong) UIScrollView *rootScrollView; //主视图
 @property (nonatomic, strong) UIScrollView *topScrollView; //顶部页签视图
 @property (nonatomic, assign) CGFloat userContentOffsetX;
-@property (nonatomic, assign) NSInteger userSelectedChannelID;
+@property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, assign) NSInteger scrollViewSelectedChannelID;
 @property (nonatomic, weak) id<RUQTabPageViewDelegate> delegate;
 @property (nonatomic, strong) UIColor *tabItemNormalColor;
@@ -79,7 +79,7 @@ alpha:1.0])
  */
 - (UIViewController<RUQPageViewControllerProtocol> *)slideSwitchView:(RUQTabPageView *)view viewOfTab:(NSUInteger)number;
 
-- (UINavigationController*) navigationController;
+- (UINavigationController*) viewController;
 
 @optional
 
