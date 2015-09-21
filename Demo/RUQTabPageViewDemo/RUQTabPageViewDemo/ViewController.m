@@ -18,11 +18,11 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    // Do any additional setup after loading the view, typically from a nib.
-    CGRect f = self.view.bounds;
+- (void)loadView {
+    CGRect f = [UIScreen mainScreen].bounds;
+    self.view = [[UIView alloc] initWithFrame:f];
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     f.origin.y += 20;
     f.size.height -= 20;
     RUQTabPageView *view = [[RUQTabPageView alloc] initWithFrame:f];
@@ -40,11 +40,25 @@
         DetailViewController *vc = [DetailViewController new];
         vc.title = day;
         [self.dataSource addObject:vc];
+        [self addChildViewController:vc];
+        [vc didMoveToParentViewController:self];
     }
     view.delegate = self;
-
     [self.view addSubview:view];
     self.tabPageView = view;
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    NSLog(@"viewWillAppear: parent start");
+    [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear: parent end");
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    NSLog(@"viewDidAppear: parent start");
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear: parent end");
 }
 
 - (void)didReceiveMemoryWarning {

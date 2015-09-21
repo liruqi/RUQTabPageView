@@ -38,8 +38,7 @@ static const CGFloat kHeightOfTopScrollView = 36.0f;
 @property (nonatomic, strong) UIScrollView *topScrollView; //顶部页签视图
 @property (nonatomic, assign) CGFloat userContentOffsetX;
 @property (nonatomic, assign) NSInteger selectedIndex;
-@property (nonatomic, assign) NSInteger scrollViewSelectedChannelID;
-@property (nonatomic, weak) id<RUQTabPageViewDelegate> delegate;
+@property (nonatomic, assign) id<RUQTabPageViewDelegate> delegate;
 @property (nonatomic, strong) UIColor *tabItemNormalColor;
 @property (nonatomic, strong) UIColor *tabItemSelectedColor;
 @property (nonatomic, strong) UIImage *tabItemNormalBackgroundImage;
