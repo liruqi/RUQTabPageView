@@ -72,4 +72,9 @@
     NSLog(@"didselectTab: %u", (unsigned int) number);
 }
 
+- (UIViewController*) viewController
+{
+    return self;
+}
+
 @end

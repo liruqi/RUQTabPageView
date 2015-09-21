@@ -79,7 +79,7 @@ static const CGFloat kHeightOfTopScrollView = 36.0f;
  */
 - (UIViewController<RUQPageViewControllerProtocol> *)slideSwitchView:(RUQTabPageView *)view viewOfTab:(NSUInteger)number;
 
-- (UINavigationController*) viewController;
+- (UIViewController*) viewController;
 
 @optional
 
