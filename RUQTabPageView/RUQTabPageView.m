@@ -209,7 +209,6 @@ static const CGFloat RUQTabPageViewShadowHeight = 1.5;
         [button setTag:i + TAG_OFFSET];
         if (i == 0) {
             _shadowView.frame = CGRectMake(xOffset, kHeightOfTopScrollView - RUQTabPageViewShadowHeight, kScreenWidth/_viewArray.count, RUQTabPageViewShadowHeight);
-            button.selected = YES;
         }
 //        NSLog(@"title:%@ xOffset:%f buttonFrame:%@",vc.title,xOffset,NSStringFromCGRect(button.frame));
         
@@ -249,7 +248,6 @@ static const CGFloat RUQTabPageViewShadowHeight = 1.5;
          [button setTag:i + TAG_OFFSET];
         if (i == 0) {
             _shadowView.frame = CGRectMake(0, kHeightOfTopScrollView - RUQTabPageViewShadowHeight, tabWidth, RUQTabPageViewShadowHeight);
-            button.selected = YES;
         }
 //        NSLog(@"title:%@ xOffset:%f buttonFrame:%@",vc.title,xOffset,NSStringFromCGRect(button.frame));
         
